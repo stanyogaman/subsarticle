@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>YouTube → Article | AWSEEN Tool</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0a0a0f;
+      --surface: #111118;
+      --surface2: #1a1a24;
+      --border: #2a2a3a;
+      --accent: #6c63ff;
+      --accent-glow: rgba(108, 99, 255, 0.25);
+      --accent2: #00d4aa;
+      --text: #e8e8f0;
+      --text-muted: #7a7a9a;
+      --error: #ff5566;
+      --success: #00d4aa;
+      --radius: 12px;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      line-height: 1.6;
+    }
+
+    /* HEADER */
+    header {
+      border-bottom: 1px solid var(--border);
+      padding: 20px 40px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--surface);
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+    }
+
+    .logo-icon {
+      width: 36px;
+      height: 36px;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+    }
+
+    .logo-text {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text);
+      letter-spacing: -0.3px;
+    }
+
+    .logo-text span {
+      color: var(--accent);
+    }
+
+    .badge {
+      font-size: 11px;
+      font-weight: 600;
+      background: var(--accent-glow);
+      color: var(--accent);
+      border: 1px solid var(--accent);
+      padding: 3px 10px;
+      border-radius: 20px;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+
+    /* MAIN */
+    main {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 48px 24px;
+    }
+
+    .hero {
+      text-align: center;
+      margin-bottom: 48px;
+    }
+
+    .hero h1 {
+      font-size: 38px;
+      font-weight: 700;
+      letter-spacing: -1px;
+      line-height: 1.15;
+      margin-bottom: 14px;
+      background: linear-gradient(135deg, var(--text) 40%, var(--accent));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero p {
+      color: var(--text-muted);
+      font-size: 17px;
+      max-width: 520px;
+      margin: 0 auto;
+    }
+
+    /* CARD */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 32px;
+      margin-bottom: 24px;
+    }
+
+    .card-title {
+      font-size: 13px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--text-muted);
+      margin-bottom: 20px;
+    }
+
+    /* URL INPUT */
+    .url-wrapper {
+      display: flex;
+      gap: 12px;
+      align-items: stretch;
+    }
+
+    .url-input {
+      flex: 1;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 14px 18px;
+      color: var(--text);
+      font-size: 15px;
+      font-family: 'Inter', sans-serif;
+      transition: border-color 0.2s;
+      outline: none;
+    }
+
+    .url-input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-glow);
+    }
+
+    .url-input::placeholder { color: var(--text-muted); }
+
+    /* OPTIONS GRID */
+    .options-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 16px;
+      margin-top: 20px;
+    }
+
+    .option-group label {
+      display: block;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      margin-bottom: 8px;
+    }
+
+    select {
+      width: 100%;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px 14px;
+      color: var(--text);
+      font-size: 14px;
+      font-family: 'Inter', sans-serif;
+      cursor: pointer;
+      outline: none;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%237a7a9a' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 12px center;
+    }
+
+    select:focus { border-color: var(--accent); }
+
+    /* BUTTONS */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 14px 24px;
+      border-radius: 10px;
+      font-size: 15px;
+      font-weight: 600;
+      font-family: 'Inter', sans-serif;
+      cursor: pointer;
+      border: none;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent), #8b85ff);
+      color: #fff;
+      box-shadow: 0 4px 20px var(--accent-glow);
+    }
+
+    .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 6px 28px var(--accent-glow); }
+    .btn-primary:active { transform: translateY(0); }
+    .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+    .btn-ghost {
+      background: var(--surface2);
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+
+    .btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
+
+    .btn-success {
+      background: rgba(0, 212, 170, 0.15);
+      color: var(--success);
+      border: 1px solid var(--success);
+    }
+
+    .generate-row {
+      margin-top: 24px;
+      display: flex;
+      justify-content: flex-end;
+    }
+
+    /* STATUS */
+    .status {
+      display: none;
+      align-items: center;
+      gap: 12px;
+      padding: 16px 20px;
+      border-radius: 10px;
+      margin-bottom: 24px;
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    .status.loading {
+      display: flex;
+      background: rgba(108, 99, 255, 0.1);
+      border: 1px solid var(--accent);
+      color: var(--accent);
+    }
+
+    .status.error {
+      display: flex;
+      background: rgba(255, 85, 102, 0.1);
+      border: 1px solid var(--error);
+      color: var(--error);
+    }
+
+    .spinner {
+      width: 18px;
+      height: 18px;
+      border: 2px solid var(--accent-glow);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      flex-shrink: 0;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* RESULT */
+    #result-section { display: none; }
+
+    .result-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+      flex-wrap: gap;
+    }
+
+    .result-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .result-meta {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    .result-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    /* TABS */
+    .tabs {
+      display: flex;
+      gap: 4px;
+      margin-bottom: 16px;
+      background: var(--bg);
+      border-radius: 10px;
+      padding: 4px;
+      border: 1px solid var(--border);
+      width: fit-content;
+    }
+
+    .tab {
+      padding: 8px 18px;
+      border-radius: 7px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+      font-family: 'Inter', sans-serif;
+      transition: all 0.15s;
+    }
+
+    .tab.active {
+      background: var(--surface);
+      color: var(--text);
+      box-shadow: 0 1px 4px rgba(0,0,0,0.3);
+    }
+
+    /* OUTPUT */
+    .output-box {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 28px;
+      font-size: 14.5px;
+      line-height: 1.75;
+      color: var(--text);
+      min-height: 300px;
+      overflow-x: auto;
+    }
+
+    .output-box.preview h1 { font-size: 26px; font-weight: 700; margin-bottom: 12px; letter-spacing: -0.5px; }
+    .output-box.preview h2 { font-size: 20px; font-weight: 600; margin: 28px 0 10px; color: var(--text); }
+    .output-box.preview h3 { font-size: 16px; font-weight: 600; margin: 20px 0 8px; color: var(--accent2); }
+    .output-box.preview p { margin-bottom: 14px; }
+    .output-box.preview ul, .output-box.preview ol { margin: 12px 0 16px 20px; }
+    .output-box.preview li { margin-bottom: 6px; }
+    .output-box.preview strong { color: var(--text); font-weight: 600; }
+    .output-box.preview .meta-description { color: var(--text-muted); font-style: italic; border-left: 3px solid var(--accent); padding-left: 14px; margin-bottom: 20px; }
+
+    .output-code {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12.5px;
+      white-space: pre-wrap;
+      word-break: break-all;
+    }
+
+    /* COPY FEEDBACK */
+    .copy-flash {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      background: var(--success);
+      color: #000;
+      padding: 12px 20px;
+      border-radius: 10px;
+      font-weight: 600;
+      font-size: 14px;
+      opacity: 0;
+      transition: opacity 0.3s;
+      pointer-events: none;
+      z-index: 999;
+    }
+    .copy-flash.show { opacity: 1; }
+
+    /* STATS */
+    .stats-row {
+      display: flex;
+      gap: 20px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+
+    .stat-pill {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 8px 16px;
+      font-size: 13px;
+    }
+
+    .stat-pill span { color: var(--accent2); font-weight: 600; }
+
+    /* FOOTER */
+    footer {
+      text-align: center;
+      padding: 32px;
+      color: var(--text-muted);
+      font-size: 13px;
+      border-top: 1px solid var(--border);
+      margin-top: 60px;
+    }
+
+    footer a { color: var(--accent); text-decoration: none; }
+
+    @media (max-width: 640px) {
+      header { padding: 16px 20px; }
+      main { padding: 32px 16px; }
+      .hero h1 { font-size: 28px; }
+      .options-grid { grid-template-columns: 1fr; }
+      .url-wrapper { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <a class="logo" href="/">
+    <div class="logo-icon">✦</div>
+    <div class="logo-text">AWS<span>EEN</span></div>
+  </a>
+  <div class="badge">AI Tool</div>
+</header>
+
+<main>
+  <div class="hero">
+    <h1>YouTube → WordPress Article</h1>
+    <p>Paste any YouTube URL with captions and get a publish-ready blog article in seconds.</p>
+  </div>
+
+  <!-- INPUT CARD -->
+  <div class="card">
+    <div class="card-title">Video URL</div>
+
+    <div class="url-wrapper">
+      <input
+        type="url"
+        id="urlInput"
+        class="url-input"
+        placeholder="https://youtu.be/... or https://youtube.com/watch?v=..."
+        autocomplete="off"
+      />
+    </div>
+
+    <div class="options-grid">
+      <div class="option-group">
+        <label>Article Type</label>
+        <select id="articleType">
+          <option value="interview">Interview</option>
+          <option value="general" selected>General Blog Post</option>
+          <option value="tutorial">Tutorial / How-To</option>
+          <option value="news">News Article</option>
+          <option value="opinion">Opinion / Thought Leadership</option>
+        </select>
+      </div>
+
+      <div class="option-group">
+        <label>Tone</label>
+        <select id="tone">
+          <option value="engaging" selected>Engaging & Story-driven</option>
+          <option value="professional">Professional</option>
+          <option value="casual">Casual & Friendly</option>
+        </select>
+      </div>
+
+      <div class="option-group">
+        <label>Language</label>
+        <select id="language">
+          <option value="English" selected>English</option>
+          <option value="Russian">Russian</option>
+          <option value="German">German</option>
+          <option value="French">French</option>
+          <option value="Spanish">Spanish</option>
+          <option value="Thai">Thai</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="generate-row">
+      <button class="btn btn-primary" id="generateBtn" onclick="generate()">
+        <span>✦</span> Generate Article
+      </button>
+    </div>
+  </div>
+
+  <!-- STATUS -->
+  <div class="status" id="status">
+    <div class="spinner"></div>
+    <span id="statusText">Fetching captions...</span>
+  </div>
+
+  <!-- RESULT SECTION -->
+  <div id="result-section">
+    <div class="stats-row" id="statsRow"></div>
+
+    <div class="result-header">
+      <div>
+        <div class="result-title">Generated Article</div>
+        <div class="result-meta">Ready to paste into WordPress → Text/HTML mode</div>
+      </div>
+      <div class="result-actions">
+        <button class="btn btn-ghost" onclick="copyHtml()">⎘ Copy HTML</button>
+        <button class="btn btn-ghost" onclick="copyPlain()">⎘ Copy Plain Text</button>
+        <button class="btn btn-success" onclick="downloadHtml()">↓ Download .html</button>
+      </div>
+    </div>
+
+    <div class="tabs">
+      <button class="tab active" onclick="switchTab('preview', this)">Preview</button>
+      <button class="tab" onclick="switchTab('html', this)">HTML Code</button>
+    </div>
+
+    <div class="output-box preview" id="previewOutput"></div>
+    <div class="output-box output-code" id="htmlOutput" style="display:none;"></div>
+  </div>
+</main>
+
+<footer>
+  Built by <a href="https://awseen.com" target="_blank">AWSEEN</a> · AI Automation & Web Development
+</footer>
+
+<div class="copy-flash" id="copyFlash">✓ Copied to clipboard!</div>
+
+<script>
+  let generatedHtml = '';
+
+  async function generate() {
+    const url = document.getElementById('urlInput').value.trim();
+    const articleType = document.getElementById('articleType').value;
+    const tone = document.getElementById('tone').value;
+    const language = document.getElementById('language').value;
+
+    if (!url) {
+      showError('Please enter a YouTube URL');
+      return;
+    }
+
+    const btn = document.getElementById('generateBtn');
+    btn.disabled = true;
+
+    document.getElementById('result-section').style.display = 'none';
+    showStatus('loading', 'Fetching captions from YouTube...');
+
+    setTimeout(() => {
+      if (document.getElementById('status').classList.contains('loading')) {
+        setStatusText('Generating article with AI...');
+      }
+    }, 3000);
+
+    try {
+      const res = await fetch('/api/generate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ url, articleType, tone, language }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok || !data.success) {
+        throw new Error(data.error || 'Something went wrong');
+      }
+
+      generatedHtml = data.article;
+      showResult(data);
+
+    } catch (err) {
+      showError(err.message);
+    } finally {
+      btn.disabled = false;
+    }
+  }
+
+  function showStatus(type, text) {
+    const el = document.getElementById('status');
+    el.className = 'status ' + type;
+    document.getElementById('statusText').textContent = text;
+  }
+
+  function setStatusText(text) {
+    document.getElementById('statusText').textContent = text;
+  }
+
+  function showError(msg) {
+    showStatus('error', '✗ ' + msg);
+  }
+
+  function hideStatus() {
+    document.getElementById('status').className = 'status';
+  }
+
+  function showResult(data) {
+    hideStatus();
+
+    // Stats
+    const statsHtml = `
+      <div class="stat-pill">Article words: <span>${data.wordCount?.toLocaleString() || '—'}</span></div>
+      <div class="stat-pill">Transcript words: <span>${data.transcriptWordCount?.toLocaleString() || '—'}</span></div>
+    `;
+    document.getElementById('statsRow').innerHTML = statsHtml;
+
+    // Preview
+    document.getElementById('previewOutput').innerHTML = generatedHtml;
+    document.getElementById('previewOutput').className = 'output-box preview';
+
+    // HTML
+    document.getElementById('htmlOutput').textContent = generatedHtml;
+
+    document.getElementById('result-section').style.display = 'block';
+    document.getElementById('result-section').scrollIntoView({ behavior: 'smooth' });
+  }
+
+  function switchTab(tab, btn) {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    btn.classList.add('active');
+
+    if (tab === 'preview') {
+      document.getElementById('previewOutput').style.display = 'block';
+      document.getElementById('htmlOutput').style.display = 'none';
+    } else {
+      document.getElementById('previewOutput').style.display = 'none';
+      document.getElementById('htmlOutput').style.display = 'block';
+    }
+  }
+
+  function copyHtml() {
+    navigator.clipboard.writeText(generatedHtml).then(() => flash('✓ HTML Copied!'));
+  }
+
+  function copyPlain() {
+    const tmp = document.createElement('div');
+    tmp.innerHTML = generatedHtml;
+    navigator.clipboard.writeText(tmp.textContent).then(() => flash('✓ Plain Text Copied!'));
+  }
+
+  function downloadHtml() {
+    const blob = new Blob([generatedHtml], { type: 'text/html' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'article.html';
+    a.click();
+  }
+
+  function flash(msg) {
+    const el = document.getElementById('copyFlash');
+    el.textContent = msg;
+    el.classList.add('show');
+    setTimeout(() => el.classList.remove('show'), 2200);
+  }
+
+  // Allow Enter key to trigger generate
+  document.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('urlInput').addEventListener('keydown', e => {
+      if (e.key === 'Enter') generate();
+    });
+  });
+</script>
+</body>
+</html>
